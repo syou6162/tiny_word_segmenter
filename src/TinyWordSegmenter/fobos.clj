@@ -26,3 +26,6 @@
 		  (dissoc tmp-result k)
 		  tmp-result)))
 	    weight weight)))
+
+(defn add-example [examples fv y]
+  (conj examples [fv y]))

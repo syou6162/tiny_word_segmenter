@@ -27,3 +27,11 @@
 	lambda 1.0]
     (is (empty
 	 (l1-regularize weight iter example-size lambda)))))
+
+(deftest test-add-example
+  (let [init [[[[1 1] [2 1]] 1]
+	      [[[1 2] [3 2]] -1]]]
+    (is (= [[[[1 1] [2 1]] 1]
+	    [[[1 2] [3 2]] -1]
+	    [[[1 1] [4 1]] 1]]
+	     (add-example init [[1 1] [4 1]] 1)))))
