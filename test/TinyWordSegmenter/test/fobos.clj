@@ -35,3 +35,8 @@
 	    [[[1 2] [3 2]] -1]
 	    [[[1 1] [4 1]] 1]]
 	     (add-example init [[1 1] [4 1]] 1)))))
+
+(deftest test-muladd
+  (let [weight {0 0.1, 1 0.2, 2 0.5, 3 -0.1}
+	fv [[1 1] [2 1]]]
+    (muladd weight fv 1 0.1)))

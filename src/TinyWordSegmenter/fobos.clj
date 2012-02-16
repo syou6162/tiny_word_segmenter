@@ -29,3 +29,9 @@
 
 (defn add-example [examples fv y]
   (conj examples [fv y]))
+
+(defn muladd [weight fv y scale]
+  (reduce (fn [result [k xi]]
+	    (assoc result k (+ (get-in result [k] 0.0)
+			       (* y xi scale))))
+	  weight fv))
