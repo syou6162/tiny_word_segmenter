@@ -15,3 +15,15 @@
 		    2 0.5,
 		    3 -0.1}
 		   [[1 1] [3 2]]))))
+
+(deftest test-get-eta
+  (is (= (/ 1.0 (+ 1.0 (/ 3 100)))
+	 (get-eta 3 100))))
+
+(deftest test-l1-regularize
+  (let [weight {0 0.1, 1 0.2, 2 0.5, 3 -0.1}
+	iter 100
+	example-size 1000
+	lambda 1.0]
+    (is (empty
+	 (l1-regularize weight iter example-size lambda)))))

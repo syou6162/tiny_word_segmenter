@@ -11,3 +11,18 @@
 	    (+ sum
 	       (* v (get-in weight [k] 0.0))))
 	  0.0 fv))
+
+(defn get-eta [iter example-size]
+  "各iterationで重みを減衰させていく"
+  (/ 1.0 (+ 1.0 (/ iter example-size))))
+
+(defn l1-regularize 
+  "L1正則化をかけて、sparseにした重みベクトルを返す"
+  [weight iter example-size lambda]
+  (let [lambda-hat (* (get-eta iter example-size) lambda)]
+    (reduce (fn [result [k v]]
+	      (let [tmp-result (assoc result k (clip-by-zero v lambda-hat))]
+		(if (< (Math/abs v) lambda-hat)
+		  (dissoc tmp-result k)
+		  tmp-result)))
+	    weight weight)))
