@@ -20,18 +20,15 @@
   "L1正則化をかけて、sparseにした重みベクトルを返す"
   [weight iter example-size lambda]
   (let [lambda-hat (* (get-eta iter example-size) lambda)]
-    (reduce (fn [result [k v]]
-	      (let [tmp-result (assoc result k (clip-by-zero v lambda-hat))]
+    (reduce (fn [w [k v]]
+	      (let [tmp-w (assoc w k (clip-by-zero v lambda-hat))]
 		(if (< (Math/abs v) lambda-hat)
-		  (dissoc tmp-result k)
-		  tmp-result)))
+		  (dissoc tmp-w k)
+		  tmp-w)))
 	    weight weight)))
 
-(defn add-example [examples fv y]
-  (conj examples [fv y]))
-
 (defn muladd [weight fv y scale]
-  (reduce (fn [result [k xi]]
-	    (assoc result k (+ (get-in result [k] 0.0)
-			       (* y xi scale))))
+  (reduce (fn [w [k xi]]
+	    (assoc w k (+ (get-in w [k] 0.0)
+			  (* y xi scale))))
 	  weight fv))
