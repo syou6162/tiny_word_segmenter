@@ -31,11 +31,11 @@
 
 (defn -main [& args]
   (with-command-line args "lein run -m TinyWordSegmenter.news20binary --train-filename train.txt --test-filename test.txt --max-iter 10 --eta 1.0 --lambda 1.0"
-    [[train-filename "File name of training"]
-     [test-filename "Number of topic dimension"]
-     [max-iter "Hyperparameter for domain dependent/independant prior"]
-     [eta "Hyperparameter for word prior"]
-     [lambda "Hyperparameter for sentiment prior"]
+    [[train-filename "File name of train"]
+     [test-filename "File name of test"]
+     [max-iter "Maximum number of iteration"]
+     [eta "Update step"]
+     [lambda "Regularization parameter"]
      rest]
     (run {:train-filename train-filename
 	  :test-filename test-filename
