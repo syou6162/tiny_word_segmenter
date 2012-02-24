@@ -32,5 +32,6 @@
 (defn get-fv
   "centerを中心としたfeature vectorを生成する"
   [str-arg center]
-  [[(get-type-bigram-feature
-     (subs str-arg center (+ center 2))) 1.0]])
+  (let [result []]
+    (conj result [(get-type-bigram-feature
+		   (subs str-arg center (+ center 2))) 1.0])))
