@@ -3,6 +3,7 @@
   (:use TinyWordSegmenter.fobos)
   (:use TinyWordSegmenter.util)
   (:use TinyWordSegmenter.svm)
+  (:use TinyWordSegmenter.decoder)
   (:use [clojure.set :only (difference)]))
 
 (defn get-examples [filename]
@@ -36,6 +37,8 @@
 	(do
 	  (println iter ":"
 		   (count weight) ":"
-		   (get-f-value gold (map #(if (> (dotproduct weight (second %)) 0.0) 1 -1) test-examples)))
+		   (get-f-value gold (map #(if (> (dotproduct weight (second %)) 0.0) 1 -1) test-examples))
+		   (decode weight "日本語です。Tokyo")
+		   (decode weight "無茶ぶりを他人に割り振る。うーむこれが中間管理職か。いやな仕事だ。ごめんよダニエル"))
 	  (recur (inc iter)
 		 (update-weight train-examples weight iter eta lambda)))))))
