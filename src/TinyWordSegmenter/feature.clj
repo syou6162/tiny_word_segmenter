@@ -28,3 +28,9 @@
 (defn get-type-bigram-feature [substr]
   (let [v (vec (map get-char-type substr))]
     (struct feature (+ 7 (first v) (* 5 (second v))) "")))
+
+(defn get-fv
+  "centerを中心としたfeature vectorを生成する"
+  [str-arg center]
+  [[(get-type-bigram-feature
+     (subs str-arg center (+ center 2))) 1.0]])

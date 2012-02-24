@@ -9,3 +9,7 @@
 	 (struct feature 13 "")))
   (is (= (get-type-bigram-feature "日本")
 	 (struct feature 31 ""))))
+
+(deftest test-get-fv
+  (is (= (get-fv "日本" 0)
+	 [[(struct feature 31 "") 1.0]])))
