@@ -10,6 +10,9 @@
   (map (fn [[start end]] (subs str-arg start end))
        (partition 2 1 pos)))
 
-(defn -main [& args]
+(defn get-splitted-words-from-lines [lines]
   (vec (map #(vec (split #"\n" %))
-	    (split #"\nEOS\n" (slurp "KyotoUniv.txt")))))
+	    (split #"\nEOS\n" lines))))
+
+(defn -main [& args]
+  (get-splitted-words-from-lines (slurp "KyotoUniv.txt")))
