@@ -1,4 +1,5 @@
 (ns TinyWordSegmenter.core
+  (:use [TinyWordSegmenter.feature])
   (:use [clojure.contrib.string :only (split)]))
 
 (defn get-cut-pos [words]
@@ -15,4 +16,9 @@
 	    (split #"\nEOS\n" lines))))
 
 (defn -main [& args]
-  (get-splitted-words-from-lines (slurp "KyotoUniv.txt")))
+  (map
+   (fn [words]
+     (let [line (apply str words)
+	   cuts (butlast (rest (get-cut-pos words)))]
+       (map #(vector (get-fv line %) 1) cuts)))
+   (get-splitted-words-from-lines (slurp "KyotoUniv.txt"))))

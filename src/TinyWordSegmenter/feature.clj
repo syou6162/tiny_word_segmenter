@@ -34,4 +34,4 @@
   [str-arg center]
   (let [result []]
     (conj result [(get-type-bigram-feature
-		   (subs str-arg center (+ center 2))) 1.0])))
+		   (subs str-arg (dec center) (inc center))) 1.0])))
