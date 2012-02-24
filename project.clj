@@ -1,4 +1,4 @@
-(defproject TinyWordSegmenter "0.0.3"
+(defproject TinyWordSegmenter "0.0.4"
   :description "Tiny word segmenter written in clojure"
   :dependencies [[org.clojure/clojure "1.3.0"]
 		 [org.clojure/clojure-contrib "1.2.0"]
