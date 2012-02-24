@@ -6,6 +6,9 @@
    (fn [cum str] (+ cum (count str)))
    0 words))
 
+(defn split-by-pos [str-arg pos]
+  (map (fn [[start end]] (subs str-arg start end))
+       (partition 2 1 pos)))
 
 (defn -main [& args]
   (vec (map #(vec (split #"\n" %))
