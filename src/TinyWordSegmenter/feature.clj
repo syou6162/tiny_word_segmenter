@@ -1,4 +1,5 @@
-(ns TinyWordSegmenter.feature)
+(ns TinyWordSegmenter.feature
+  (:use [clojure.contrib.string :only (split)]))
 
 (import 'java.lang.Character$UnicodeBlock)
 
@@ -35,3 +36,16 @@
   (let [result []]
     (conj result [(get-type-bigram-feature
 		   (subs str-arg (dec center) (inc center))) 1.0])))
+
+(defn get-cut-pos [words]
+  (reductions
+   (fn [cum str] (+ cum (count str)))
+   0 words))
+
+(defn split-by-pos [str-arg pos]
+  (map (fn [[start end]] (subs str-arg start end))
+       (partition 2 1 pos)))
+
+(defn get-splitted-words-from-lines [lines]
+  (vec (map #(vec (split #"\n" %))
+	    (split #"\nEOS\n" lines))))
