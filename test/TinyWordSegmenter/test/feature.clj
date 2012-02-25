@@ -3,13 +3,12 @@
   (:use [clojure.test]))
 
 (deftest test-get-type-bigram-feature
-  (is (= (get-type-bigram-feature "AB")
-	 
-	 (struct feature 31 "")))
-  (is (= (get-type-bigram-feature "あい")
-	 (struct feature 13 "")))
-  (is (= (get-type-bigram-feature "日本")
-	 (struct feature 31 ""))))
+  (is (= (get-type-bigram-feature "AB" 1)
+	 [(struct feature 31 "") 1.0]))
+  (is (= (get-type-bigram-feature "あい" 1)
+	 [(struct feature 13 "") 1.0]))
+  (is (= (get-type-bigram-feature "日本" 1)
+	 [(struct feature 31 "") 1.0])))
 
 (deftest test-get-unigram-feature
   (is (= (get-unigram-feature "ABCDEFG" 4)
