@@ -11,13 +11,37 @@
   (is (= (get-type-bigram-feature "日本")
 	 (struct feature 31 ""))))
 
-(deftest test-get-fv
-  (is (= (get-fv "日本" 1)
-	 [[(struct feature 31 "") 1.0]]))
-  (is (= (map (fn [center] (get-fv "日本は" center))
-	      (range 1 3))
-	 (list [[(struct feature 31 "") 1.0]]
-	       [[(struct feature 16 "") 1.0]]))))
+(deftest test-get-unigram-feature
+  (is (= (get-unigram-feature "ABCDEFG" 4)
+	 [[{:type 0, :str "C"} 1.0]
+	  [{:type 1, :str "D"} 1.0]
+	  [{:type 2, :str "E"} 1.0]
+	  [{:type 3, :str "F"} 1.0]]))
+  (is (= (get-unigram-feature "ABCDEFG" 1)
+	 [[{:type 0, :str ""} 1.0]
+	  [{:type 1, :str "A"} 1.0]
+	  [{:type 2, :str "B"} 1.0]
+	  [{:type 3, :str "C"} 1.0]]))
+  (is (= (get-unigram-feature "ABCDEFG" 6)
+	 [[{:type 0, :str "E"} 1.0]
+	  [{:type 1, :str "F"} 1.0]
+	  [{:type 2, :str "G"} 1.0]
+	  [{:type 3, :str ""} 1.0]]))
+  (is (= (get-unigram-feature "AB" 1)
+	 [[{:type 0, :str ""} 1.0]
+	  [{:type 1, :str "A"} 1.0]
+	  [{:type 2, :str "B"} 1.0]
+	  [{:type 3, :str ""} 1.0]]))
+  (is (= (get-unigram-feature "A" 1)
+	 [[{:type 0, :str ""} 1.0]
+	  [{:type 1, :str "A"} 1.0]
+	  [{:type 2, :str ""} 1.0]
+	  [{:type 3, :str ""} 1.0]]))
+  (is (= (get-unigram-feature "" 0)
+	 [[{:type 0, :str ""} 1.0]
+	  [{:type 1, :str ""} 1.0]
+	  [{:type 2, :str ""} 1.0]
+	  [{:type 3, :str ""} 1.0]])))
 
 (deftest test-get-cut-pos
   (is (= (get-cut-pos ["出口" "さん" "の" "失跡" "を" "警察" "に"
