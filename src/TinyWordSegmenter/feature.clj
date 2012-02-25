@@ -26,9 +26,9 @@
 	(is-symbol? c) 3
 	:else 4))
 
-(defn get-type-bigram-feature [substr]
-  (let [v (vec (map get-char-type substr))]
-    (struct feature (+ 7 (first v) (* 5 (second v))) "")))
+(defn get-type-bigram-feature [str-arg center]
+  (let [v (vec (map get-char-type (subs str-arg (dec center) (inc center))))]
+    (vector (struct feature (+ 7 (first v) (* 5 (second v))) "") 1.0)))
 
 (defn get-unigram-feature [str-arg center]
   (->> (list
@@ -47,15 +47,21 @@
        (map #(vector % 1.0))
        (vec)))
 
+(defn get-bigram-feature [str-arg center]
+  (cond
+   (empty? str-arg) (vector (struct feature 5 "") 1.0) ;; 空文字
+   (<= (count str-arg) center) (vector (struct feature 5 (subs str-arg (- center 1) center)) 1.0) ;; 1文字
+   :else (vector (struct feature 5 (subs str-arg (- center 1) (+ center 1))) 1.0))) ;; 2文字以上
+
 (defn get-fv
   "centerを中心としたfeature vectorを生成する"
   [str-arg center]
   (let [result []]
     (concat
-     (conj result [(get-type-bigram-feature
-		    (subs str-arg (dec center) (inc center))) 1.0])
+     result
+     [(get-type-bigram-feature str-arg center)]
      (get-unigram-feature str-arg center)
-     (get-bigram-feature str-arg center))))
+     [(get-bigram-feature str-arg center)])))
 
 (defn get-cut-pos [words]
   (reductions
