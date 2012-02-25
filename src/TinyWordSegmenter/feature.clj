@@ -58,10 +58,11 @@
   [str-arg center]
   (let [result []]
     (concat
-     (conj result [(get-type-bigram-feature
-		    (subs str-arg (dec center) (inc center))) 1.0])
+     result
+     [[(get-type-bigram-feature
+	(subs str-arg (dec center) (inc center))) 1.0]]
      (get-unigram-feature str-arg center)
-     (get-bigram-feature str-arg center))))
+     [(get-bigram-feature str-arg center)])))
 
 (defn get-cut-pos [words]
   (reductions
