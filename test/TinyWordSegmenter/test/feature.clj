@@ -43,6 +43,14 @@
 	  [{:type 2, :str ""} 1.0]
 	  [{:type 3, :str ""} 1.0]])))
 
+(deftest test-get-bigram-feature
+  (is (= (get-bigram-feature "ABCDEFG" 4)
+	 [{:type 5, :str "DE"} 1.0]))
+  (is (= (get-bigram-feature "A" 1)
+	 [{:type 5, :str "A"} 1.0]))
+  (is (= (get-bigram-feature "" 1)
+	 [{:type 5, :str ""} 1.0])))
+
 (deftest test-get-cut-pos
   (is (= (get-cut-pos ["出口" "さん" "の" "失跡" "を" "警察" "に"
 		       "届けた" "兄" "の" "執念" "も" "、" "警察"

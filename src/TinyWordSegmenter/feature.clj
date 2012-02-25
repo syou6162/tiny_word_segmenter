@@ -47,6 +47,12 @@
        (map #(vector % 1.0))
        (vec)))
 
+(defn get-bigram-feature [str-arg center]
+  (cond
+   (empty? str-arg) (vector (struct feature 5 "") 1.0) ;; 空文字
+   (<= (count str-arg) center) (vector (struct feature 5 (subs str-arg (- center 1) center)) 1.0) ;; 1文字
+   :else (vector (struct feature 5 (subs str-arg (- center 1) (+ center 1))) 1.0))) ;; 2文字以上
+
 (defn get-fv
   "centerを中心としたfeature vectorを生成する"
   [str-arg center]
