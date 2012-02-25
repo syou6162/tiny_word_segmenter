@@ -3,13 +3,12 @@
   (:use [clojure.test]))
 
 (deftest test-get-type-bigram-feature
-  (is (= (get-type-bigram-feature "AB")
-	 
-	 (struct feature 31 "")))
-  (is (= (get-type-bigram-feature "あい")
-	 (struct feature 13 "")))
-  (is (= (get-type-bigram-feature "日本")
-	 (struct feature 31 ""))))
+  (is (= (get-type-bigram-feature "AB" 1)
+	 [(struct feature 31 "") 1.0]))
+  (is (= (get-type-bigram-feature "あい" 1)
+	 [(struct feature 13 "") 1.0]))
+  (is (= (get-type-bigram-feature "日本" 1)
+	 [(struct feature 31 "") 1.0])))
 
 (deftest test-get-unigram-feature
   (is (= (get-unigram-feature "ABCDEFG" 4)
@@ -42,6 +41,14 @@
 	  [{:type 1, :str ""} 1.0]
 	  [{:type 2, :str ""} 1.0]
 	  [{:type 3, :str ""} 1.0]])))
+
+(deftest test-get-bigram-feature
+  (is (= (get-bigram-feature "ABCDEFG" 4)
+	 [{:type 5, :str "DE"} 1.0]))
+  (is (= (get-bigram-feature "A" 1)
+	 [{:type 5, :str "A"} 1.0]))
+  (is (= (get-bigram-feature "" 1)
+	 [{:type 5, :str ""} 1.0])))
 
 (deftest test-get-cut-pos
   (is (= (get-cut-pos ["出口" "さん" "の" "失跡" "を" "警察" "に"
