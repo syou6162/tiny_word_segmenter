@@ -33,16 +33,17 @@
 (defn get-unigram-feature [str-arg center]
   (->> (list
 	(if (neg? (- center 2))
-	  nil
+	  (struct feature 0 "")
 	  (struct feature 0 (subs str-arg (- center 2) (- center 1))))
 	(if (neg? (- center 1))
-	  nil
+	  (struct feature 1 "")
 	  (struct feature 1 (subs str-arg (- center 1) center)))
-	(struct feature 2 (subs str-arg center (+ center 1)))
-	(if (= (+ center 1) (count str-arg))
-	  nil
+	(if (>= center (count str-arg))
+	  (struct feature 2 "")
+	  (struct feature 2 (subs str-arg center (+ center 1))))
+	(if (>= (+ center 1) (count str-arg))
+	  (struct feature 3 "")
 	  (struct feature 3 (subs str-arg (+ center 1) (+ center 2)))))
-       (remove nil?)
        (map #(vector % 1.0))
        (vec)))
 
@@ -53,7 +54,8 @@
     (concat
      (conj result [(get-type-bigram-feature
 		    (subs str-arg (dec center) (inc center))) 1.0])
-     (get-unigram-feature str-arg center))))
+     (get-unigram-feature str-arg center)
+     (get-bigram-feature str-arg center))))
 
 (defn get-cut-pos [words]
   (reductions
