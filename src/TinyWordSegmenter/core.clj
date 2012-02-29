@@ -1,10 +1,12 @@
 (ns TinyWordSegmenter.core
   (:use [clojure.set :only (difference)])
   (:use [clojure.contrib.command-line :only (with-command-line)])
-  (:use [TinyWordSegmenter.feature])
-  (:use TinyWordSegmenter.fobos)
-  (:use TinyWordSegmenter.util)
-  (:use TinyWordSegmenter.svm)
+  (:use [clojure.contrib.core :only (new-by-name)])
+  (:use fobos_clj.util)
+  (:use fobos_clj.fobos)
+  (:use fobos_clj.svm)
+  (:use fobos_clj.logistic)
+  (:use TinyWordSegmenter.feature)
   (:use TinyWordSegmenter.decoder)
   (:gen-class))
 
@@ -35,27 +37,32 @@
 	max-iter (opts :max-iter)
 	eta (opts :eta)
 	lambda (opts :lambda)
-	init-weight (update-weight train-examples {} 0 eta lambda)]
+	model-name (opts :model)
+	init-model (update-weight
+		    (new-by-name model-name train-examples {} eta lambda)
+		    0)]
     (loop [iter 1
-	   weight init-weight]
+	   model init-model]
       (if (= iter max-iter)
-	(spit (opts :model-file) weight)
+	(spit (opts :model-file) {:model-name (.getName (class model))
+				  :weight (:weight model)})
 	(do
-	  (println iter ":"
-		   (count weight) ":"
-		   (get-f-value gold (map #(if (> (dotproduct weight (second %)) 0.0) 1 -1) test-examples)))
+	  (println (str iter ", "
+			(count (:weight model)) ", "
+			(get-f-value gold (map #(classify model (second %)) test-examples))))
 	  (recur (inc iter)
-		 (update-weight train-examples weight iter eta lambda)))))))
+		 (update-weight model iter)))))))
 
 (defn decoding-mode [opts]
-  (letfn [(decode-demo [weight]
+  (letfn [(decode-demo [model]
 		       (print "> ")
 		       (flush)
 		       (let [s (read-line)]
-			 (println (decode weight s))
-			 (recur weight)))]
-    (let [weight (read-string (slurp (opts :model-file)))]
-      (decode-demo weight))))
+			 (println (decode model s))
+			 (recur model)))]
+    (let [model-info (read-string (slurp (opts :model-file)))
+	  model (new-by-name (:model-name model-info) nil (:weight model-info) nil nil)]
+      (decode-demo model))))
 
 (defn -main [& args]
   (with-command-line args "comment"
@@ -65,16 +72,17 @@
      [lambda "Regularization parameter"]
      [max-iter "Number of maximum iterations"]
      [model-file "File name of trained model file"]
+     [model "Model to use. Currently, we support fobos_clj.svm.SVM and fobos_clj.logistic.Logistic"]
      rest]
     (let [opts {:file file
-		:model mode
 		:eta (try (Double/parseDouble eta)
 			  (catch Exception e 1.0))
 		:lambda (try (Double/parseDouble lambda)
 			     (catch Exception e 1.0))
 		:max-iter (try (Integer/parseInt max-iter)
 			       (catch Exception e 100))
-		:model-file model-file}]
+		:model-file model-file
+		:model model}]
       (cond (= mode "train") (training-mode opts)
 	    (= mode "decode") (decoding-mode opts)
 	    :else (do
