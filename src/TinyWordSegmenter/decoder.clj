@@ -1,13 +1,15 @@
 (ns TinyWordSegmenter.decoder
-  (:use TinyWordSegmenter.fobos)
+  (:use fobos_clj.fobos)
+  (:use fobos_clj.svm)
+  (:use fobos_clj.logistic)
   (:use [TinyWordSegmenter.feature]))
 
-(defn decode [weight line]
+(defn decode [model line]
   (split-by-pos line
 		(conj (->> (range (count line))
 			   (rest)
 			   (map
-			    #(if (>= (dotproduct weight (get-fv line %)) 0.0)
+			    #(if (= (classify model (get-fv line %)) 1)
 			       % false))
 			   (filter identity)
 			   (cons 0)
